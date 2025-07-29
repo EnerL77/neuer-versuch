@@ -4,90 +4,23 @@
   <meta charset="UTF-8">
   <title>StayokAI – Psychologische Begleitung</title>
   <style>
-    body { font-family: sans-serif; max-width: 600px; margin: 2em auto; background: #f6f6f9;}
-    h1 { color: #2563eb; }
-    label { font-weight: bold; }
-    textarea { width: 100%; margin-bottom: 1em; }
-    button { margin-right: 0.5em; padding: 0.5em 1em; border: none; border-radius: 5px; background: #2563eb; color: white; font-size: 1em;}
-    button:disabled { background: #aaa; }
-    #response { margin-top: 2em; padding: 1em; background: #fff; border-radius: 8px; min-height: 2em; }
+    body { font-family: Arial, sans-serif; margin: 2em; }
+    textarea { width: 100%; max-width: 600px; }
+    #response { margin-top: 1em; font-size: 1.2em; }
+    button { font-size: 1em; }
   </style>
 </head>
 <body>
   <h1>StayokAI</h1>
-  <form id="chat-form" autocomplete="off">
+  <form id="chat-form">
     <label for="message">Was belastet dich gerade?</label><br>
-    <textarea id="message" rows="4"></textarea>
-    <div>
-      <button type="button" id="speak">🎤 Sprechen</button>
-      <button type="submit">Senden</button>
-    </div>
+    <textarea id="message" rows="4" cols="60"></textarea><br>
+    <button type="submit">Senden</button>
   </form>
   <div id="response"></div>
 
   <script>
-    // Speech-to-Text (Spracheingabe)
-    const speakBtn = document.getElementById('speak');
-    const messageBox = document.getElementById('message');
-
-    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      const recognition = new SpeechRecognition();
-      recognition.lang = 'de-DE'; // Passe für andere Sprachen an
-
-      speakBtn.addEventListener('click', function() {
-        recognition.start();
-        speakBtn.disabled = true;
-        speakBtn.innerText = "Sprich…";
-      });
-
-      recognition.onresult = function(event) {
-        const transcript = event.results[0][0].transcript;
-        messageBox.value = transcript;
-        speakBtn.disabled = false;
-        speakBtn.innerText = "🎤 Sprechen";
-      };
-
-      recognition.onerror = function(event) {
-        speakBtn.disabled = false;
-        speakBtn.innerText = "🎤 Sprechen";
-        alert("Spracherkennung fehlgeschlagen: " + event.error);
-      };
-
-      recognition.onend = function() {
-        speakBtn.disabled = false;
-        speakBtn.innerText = "🎤 Sprechen";
-      };
-    } else {
-      speakBtn.disabled = true;
-      speakBtn.innerText = "Kein Sprachsupport";
-    }
-
-    // Formular absenden
-    document.getElementById("chat-form").addEventListener("submit", async function(event) {
-      event.preventDefault();
-      const message = document.getElementById("message").value;
-      const responseDiv = document.getElementById("response");
-      responseDiv.textContent = "Wird verarbeitet...";
-
-      const response = await fetch("/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ message: message })
-      });
-
-      const data = await response.json();
-      responseDiv.textContent = data.reply || "Fehler: " + JSON.stringify(data);
-
-      // Text-to-Speech (Antwort vorlesen)
-      if ('speechSynthesis' in window && data.reply) {
-        const utter = new SpeechSynthesisUtterance(data.reply);
-        utter.lang = 'de-DE'; // Passe die Sprache bei Bedarf an!
-        window.speechSynthesis.speak(utter);
-      }
-    });
-  </script>
-</body>
-</html>
+    // Text-to-Speech Funktion
+    function speakText(text, lang = 'de-DE') {
+      if ('speechSynthesis' in window) {
+        const utterance = new Sp
