@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>StayokAI – Psychologische Begleitung</title>
+</head>
+<body>
+  <h1>StayokAI</h1>
+  <form id="chat-form">
+    <label for="message">Was belastet dich gerade?</label><br>
+    <textarea id="message" rows="4" cols="50"></textarea><br>
+    <button type="submit">Senden</button>
+  </form>
+  <div id="response"></div>
+  <script>
+    document.getElementById("chat-form").addEventListener("submit", async function(event) {
+      event.preventDefault();
+      const message = document.getElementById("message").value;
+      const responseDiv = document.getElementById("response");
+      responseDiv.textContent = "Wird verarbeitet...";
+      const response = await fetch("/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ message: message })
+      });
+      const data = await response.json();
+      responseDiv.textContent = data.reply || "Fehler: " + JSON.stringify(data);
+    });
+  </script>
+</body>
+</html>
