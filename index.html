@@ -61,33 +61,3 @@
     } else {
       speakBtn.disabled = true;
       speakBtn.innerText = "Kein Sprachsupport";
-    }
-
-    // Formular absenden
-    document.getElementById("chat-form").addEventListener("submit", async function(event) {
-      event.preventDefault();
-      const message = document.getElementById("message").value;
-      const responseDiv = document.getElementById("response");
-      responseDiv.textContent = "Wird verarbeitet...";
-
-      const response = await fetch("/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ message: message })
-      });
-
-      const data = await response.json();
-      responseDiv.textContent = data.reply || "Fehler: " + JSON.stringify(data);
-
-      // Text-to-Speech (Antwort vorlesen)
-      if ('speechSynthesis' in window && data.reply) {
-        const utter = new SpeechSynthesisUtterance(data.reply);
-        utter.lang = 'de-DE'; // Passe die Sprache bei Bedarf an!
-        window.speechSynthesis.speak(utter);
-      }
-    });
-  </script>
-</body>
-</html>
