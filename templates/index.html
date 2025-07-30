@@ -1,26 +1,219 @@
- <!DOCTYPE html>
-<html>
+<!DOCTYPE html>
+<html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <title>StayokAI – Psychologische Begleitung</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 2em; }
-    textarea { width: 100%; max-width: 600px; }
-    #response { margin-top: 1em; font-size: 1.2em; }
-    button { font-size: 1em; }
-  </style>
+    <meta charset="UTF-8">
+    <title>StayokAI – Psychologische Begleitung</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background: #f5f8fb;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: #222;
+        }
+        .container {
+            max-width: 420px;
+            margin: 48px auto;
+            padding: 32px 24px;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 6px 32px rgba(70,110,160,0.11), 0 1.5px 4px #e5eaf1;
+        }
+        h1 {
+            text-align: center;
+            color: #1479da;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            letter-spacing: 0.03em;
+        }
+        .subtitle {
+            text-align: center;
+            color: #526272;
+            font-size: 1.12rem;
+            margin-bottom: 20px;
+        }
+        textarea {
+            width: 100%;
+            font-size: 1.1rem;
+            padding: 14px;
+            border: 1.5px solid #cfe2fd;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            resize: vertical;
+            min-height: 72px;
+            background: #fafdff;
+            outline: none;
+            transition: border-color .2s;
+        }
+        textarea:focus {
+            border-color: #1479da;
+        }
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        button {
+            flex: 1;
+            font-size: 1.1rem;
+            padding: 11px 0;
+            border: none;
+            border-radius: 8px;
+            background: #1479da;
+            color: #fff;
+            font-weight: 600;
+            box-shadow: 0 2px 6px #dbedfc66;
+            cursor: pointer;
+            transition: background .19s;
+        }
+        button:active {
+            background: #095ca9;
+        }
+        .mic-btn {
+            flex: 0 0 48px;
+            width: 48px;
+            background: #f1f7fe;
+            color: #1479da;
+            border: 1.5px solid #cfe2fd;
+            padding: 0;
+            font-size: 1.6rem;
+            margin-left: 6px;
+        }
+        .mic-btn.active {
+            background: #ffd9d9;
+            color: #ce1414;
+            border-color: #ffa2a2;
+        }
+        #response-card {
+            background: #fafdff;
+            margin-top: 18px;
+            padding: 16px 14px 14px 14px;
+            border-radius: 11px;
+            min-height: 48px;
+            box-shadow: 0 0.5px 3px #eee;
+            font-size: 1.08rem;
+            color: #324550;
+            word-break: break-word;
+        }
+        .footer {
+            text-align: center;
+            color: #90a4b4;
+            margin-top: 30px;
+            font-size: .94em;
+        }
+        @media (max-width: 600px) {
+            .container {
+                margin: 0;
+                border-radius: 0;
+                min-height: 100vh;
+                box-shadow: none;
+            }
+        }
+    </style>
 </head>
 <body>
-  <h1>MENTALki</h1>
-  <form id="chat-form">
-    <label for="message">Was belastet dich gerade?</label><br>
-    <textarea id="message" rows="4" cols="60"></textarea><br>
-    <button type="submit">Senden</button>
-  </form>
-  <div id="response"></div>
+    <div class="container">
+        <h1>StayokAI</h1>
+        <div class="subtitle">
+            Psychologische Begleitung in mehreren Sprachen.<br>
+            <span style="font-size:0.98em;">Vertraulich. Rund um die Uhr.</span>
+        </div>
+        <form id="chat-form" autocomplete="off">
+            <textarea id="message" placeholder="Was belastet dich gerade?"></textarea>
+            <div class="btn-row">
+                <button type="submit" id="sendBtn">Senden</button>
+                <button type="button" id="micBtn" class="mic-btn" title="Sprich eine Nachricht ein">
+                    <span id="micIcon">🎤</span>
+                </button>
+            </div>
+        </form>
+        <div id="response-card"> </div>
+    </div>
+    <div class="footer">
+        &copy; StayokAI 2025 &ndash; KI-Begleitung, keine Notfallhilfe.
+    </div>
+    <script>
+        const form = document.getElementById('chat-form');
+        const textarea = document.getElementById('message');
+        const responseDiv = document.getElementById('response-card');
+        const micBtn = document.getElementById('micBtn');
+        const micIcon = document.getElementById('micIcon');
 
-  <script>
-    // Text-to-Speech Funktion
-    function speakText(text, lang = 'de-DE') {
-      if ('speechSynthesis' in window) {
-        const utterance = new Sp
+        form.addEventListener("submit", async function(event) {
+            event.preventDefault();
+            responseDiv.textContent = "Bitte warten...";
+            textarea.disabled = true;
+
+            const message = textarea.value.trim();
+            if (!message) {
+                responseDiv.textContent = "Bitte gib eine Nachricht ein.";
+                textarea.disabled = false;
+                return;
+            }
+
+            try {
+                const response = await fetch("/chat", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({ message })
+                });
+                const data = await response.json();
+                if (data.reply) {
+                    responseDiv.textContent = data.reply;
+                    speakText(data.reply);
+                } else {
+                    responseDiv.textContent = data.error ? "Fehler: " + data.error : "Es ist ein Fehler aufgetreten.";
+                }
+            } catch (err) {
+                responseDiv.textContent = "Verbindungsfehler. Bitte später nochmal versuchen.";
+            }
+            textarea.disabled = false;
+        });
+
+        // Simple speech-to-text (Web Speech API)
+        let recognition;
+        if ('webkitSpeechRecognition' in window) {
+            recognition = new webkitSpeechRecognition();
+            recognition.lang = "de-DE";
+            recognition.continuous = false;
+            recognition.interimResults = false;
+
+            micBtn.onclick = () => {
+                if (micBtn.classList.contains("active")) {
+                    recognition.stop();
+                    micBtn.classList.remove("active");
+                    micIcon.textContent = "🎤";
+                    return;
+                }
+                micBtn.classList.add("active");
+                micIcon.textContent = "🛑";
+                recognition.start();
+            };
+            recognition.onresult = (event) => {
+                textarea.value = event.results[0][0].transcript;
+                micBtn.classList.remove("active");
+                micIcon.textContent = "🎤";
+            };
+            recognition.onerror = (event) => {
+                micBtn.classList.remove("active");
+                micIcon.textContent = "🎤";
+                responseDiv.textContent = "Spracherkennung fehlgeschlagen: " + event.error;
+            };
+        } else {
+            micBtn.style.display = "none";
+        }
+
+        // Text-to-speech (Sprachausgabe)
+        function speakText(text) {
+            if ('speechSynthesis' in window && text) {
+                const utter = new SpeechSynthesisUtterance(text);
+                utter.lang = "de-DE";
+                utter.rate = 1.07;
+                window.speechSynthesis.speak(utter);
+            }
+        }
+    </script>
+</body>
+</html>
