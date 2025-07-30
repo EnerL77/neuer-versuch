@@ -1,219 +1,174 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <title>StayokAI – Dein Begleiter</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            background: #f5f8fb;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            color: #222;
-        }
-        .container {
-            max-width: 420px;
-            margin: 48px auto;
-            padding: 32px 24px;
-            background: #fff;
-            border-radius: 18px;
-            box-shadow: 0 6px 32px rgba(70,110,160,0.11), 0 1.5px 4px #e5eaf1;
-        }
-        h1 {
-            text-align: center;
-            color: #1479da;
-            font-size: 2.2rem;
-            margin-bottom: 10px;
-            letter-spacing: 0.03em;
-        }
-        .subtitle {
-            text-align: center;
-            color: #526272;
-            font-size: 1.12rem;
-            margin-bottom: 20px;
-        }
-        textarea {
-            width: 100%;
-            font-size: 1.1rem;
-            padding: 14px;
-            border: 1.5px solid #cfe2fd;
-            border-radius: 10px;
-            margin-bottom: 16px;
-            resize: vertical;
-            min-height: 72px;
-            background: #fafdff;
-            outline: none;
-            transition: border-color .2s;
-        }
-        textarea:focus {
-            border-color: #1479da;
-        }
-        .btn-row {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-        button {
-            flex: 1;
-            font-size: 1.1rem;
-            padding: 11px 0;
-            border: none;
-            border-radius: 8px;
-            background: #1479da;
-            color: #fff;
-            font-weight: 600;
-            box-shadow: 0 2px 6px #dbedfc66;
-            cursor: pointer;
-            transition: background .19s;
-        }
-        button:active {
-            background: #095ca9;
-        }
-        .mic-btn {
-            flex: 0 0 48px;
-            width: 48px;
-            background: #f1f7fe;
-            color: #1479da;
-            border: 1.5px solid #cfe2fd;
-            padding: 0;
-            font-size: 1.6rem;
-            margin-left: 6px;
-        }
-        .mic-btn.active {
-            background: #ffd9d9;
-            color: #ce1414;
-            border-color: #ffa2a2;
-        }
-        #response-card {
-            background: #fafdff;
-            margin-top: 18px;
-            padding: 16px 14px 14px 14px;
-            border-radius: 11px;
-            min-height: 48px;
-            box-shadow: 0 0.5px 3px #eee;
-            font-size: 1.08rem;
-            color: #324550;
-            word-break: break-word;
-        }
-        .footer {
-            text-align: center;
-            color: #90a4b4;
-            margin-top: 30px;
-            font-size: .94em;
-        }
-        @media (max-width: 600px) {
-            .container {
-                margin: 0;
-                border-radius: 0;
-                min-height: 100vh;
-                box-shadow: none;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>StayokAI – Psychologische Begleitung</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background: #f7f9fb;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #222;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background: #6fc6a8;
+      color: white;
+      padding: 1.5rem 1rem 1rem 1rem;
+      border-radius: 0 0 2rem 2rem;
+      text-align: center;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+    }
+    header h1 {
+      margin: 0;
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    .chat-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      max-width: 440px;
+      width: 96%;
+      margin: 2rem auto 1rem auto;
+      background: #fff;
+      border-radius: 1.5rem;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+      padding: 1.5rem 1.2rem 1rem 1.2rem;
+      min-height: 400px;
+    }
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      margin-bottom: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+    .bubble {
+      max-width: 80%;
+      padding: 0.7rem 1.1rem;
+      border-radius: 1.2rem;
+      font-size: 1rem;
+      line-height: 1.5;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+      word-break: break-word;
+      margin-bottom: 2px;
+    }
+    .bubble.user {
+      align-self: flex-end;
+      background: #e0f7fa;
+      color: #247070;
+      border-bottom-right-radius: 0.2rem;
+    }
+    .bubble.bot {
+      align-self: flex-start;
+      background: #f3f6fd;
+      color: #393b6a;
+      border-bottom-left-radius: 0.2rem;
+    }
+    form {
+      display: flex;
+      gap: 0.5rem;
+    }
+    textarea {
+      flex: 1;
+      resize: none;
+      border-radius: 0.9rem;
+      border: 1px solid #d0e4df;
+      padding: 0.7rem 1rem;
+      font-size: 1rem;
+      background: #f7f9fb;
+      outline: none;
+      min-height: 36px;
+      transition: border .2s;
+    }
+    textarea:focus {
+      border: 1.5px solid #90e0d2;
+      background: #fff;
+    }
+    button {
+      background: #6fc6a8;
+      color: white;
+      border: none;
+      border-radius: 1rem;
+      padding: 0.7rem 1.3rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: #53b392;
+    }
+    .footer {
+      text-align: center;
+      font-size: 0.97rem;
+      color: #8ea1a8;
+      margin: 1.5rem 0 1rem 0;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>StayokAI</h1>
-        <div class="subtitle">
-            Psychologische Begleitung in mehreren Sprachen.<br>
-            <span style="font-size:0.98em;">Vertraulich. Rund um die Uhr.</span>
-        </div>
-        <form id="chat-form" autocomplete="off">
-            <textarea id="message" placeholder="Was belastet dich gerade?"></textarea>
-            <div class="btn-row">
-                <button type="submit" id="sendBtn">Senden</button>
-                <button type="button" id="micBtn" class="mic-btn" title="Sprich eine Nachricht ein">
-                    <span id="micIcon">🎤</span>
-                </button>
-            </div>
-        </form>
-        <div id="response-card"> </div>
+  <header>
+    <h1>StayokAI</h1>
+    <div style="font-size:1.1rem;margin-top:0.3rem;font-weight:400;">
+      Psychologische Begleitung für dich.<br>
+      <span style="font-size:0.98rem;color:#f7f9fb9e;">Arabisch · Farsi · Dari · Ukrainisch</span>
     </div>
-    <div class="footer">
-        &copy; StayokAI 2025 &ndash; KI-Begleitung, keine Notfallhilfe.
+  </header>
+  <div class="chat-container">
+    <div class="chat-messages" id="chat-messages">
+      <div class="bubble bot">Hallo, ich bin StayokAI. Was belastet dich gerade?</div>
     </div>
-    <script>
-        const form = document.getElementById('chat-form');
-        const textarea = document.getElementById('message');
-        const responseDiv = document.getElementById('response-card');
-        const micBtn = document.getElementById('micBtn');
-        const micIcon = document.getElementById('micIcon');
+    <form id="chat-form">
+      <textarea id="message" placeholder="Deine Nachricht…" rows="1" required></textarea>
+      <button type="submit">Senden</button>
+    </form>
+  </div>
+  <div class="footer">
+    <span>In akuten Krisen: <b>0800 111 0 111</b> (Telefonseelsorge)</span><br>
+    <span style="font-size:0.88rem;">Hinweis: Diese App ersetzt keine ärztliche Notfallhilfe.</span>
+  </div>
+  <script>
+    const chatMessages = document.getElementById("chat-messages");
+    const chatForm = document.getElementById("chat-form");
+    const textarea = document.getElementById("message");
 
-        form.addEventListener("submit", async function(event) {
-            event.preventDefault();
-            responseDiv.textContent = "Bitte warten...";
-            textarea.disabled = true;
+    chatForm.addEventListener("submit", async function(event) {
+      event.preventDefault();
+      const userText = textarea.value.trim();
+      if (!userText) return;
+      addMessage(userText, "user");
+      textarea.value = "";
+      chatMessages.scrollTop = chatMessages.scrollHeight;
 
-            const message = textarea.value.trim();
-            if (!message) {
-                responseDiv.textContent = "Bitte gib eine Nachricht ein.";
-                textarea.disabled = false;
-                return;
-            }
+      const res = await fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: userText })
+      });
 
-            try {
-                const response = await fetch("/chat", {
-                    method: "POST",
-                    headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify({ message })
-                });
-                const data = await response.json();
-                if (data.reply) {
-                    responseDiv.textContent = data.reply;
-                    speakText(data.reply);
-                } else {
-                    responseDiv.textContent = data.error ? "Fehler: " + data.error : "Es ist ein Fehler aufgetreten.";
-                }
-            } catch (err) {
-                responseDiv.textContent = "Verbindungsfehler. Bitte später nochmal versuchen.";
-            }
-            textarea.disabled = false;
-        });
+      const data = await res.json();
+      if (data.reply) {
+        addMessage(data.reply, "bot");
+      } else if (data.error) {
+        addMessage("Fehler: " + data.error, "bot");
+      }
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    });
 
-        // Simple speech-to-text (Web Speech API)
-        let recognition;
-        if ('webkitSpeechRecognition' in window) {
-            recognition = new webkitSpeechRecognition();
-            recognition.lang = "de-DE";
-            recognition.continuous = false;
-            recognition.interimResults = false;
-
-            micBtn.onclick = () => {
-                if (micBtn.classList.contains("active")) {
-                    recognition.stop();
-                    micBtn.classList.remove("active");
-                    micIcon.textContent = "🎤";
-                    return;
-                }
-                micBtn.classList.add("active");
-                micIcon.textContent = "🛑";
-                recognition.start();
-            };
-            recognition.onresult = (event) => {
-                textarea.value = event.results[0][0].transcript;
-                micBtn.classList.remove("active");
-                micIcon.textContent = "🎤";
-            };
-            recognition.onerror = (event) => {
-                micBtn.classList.remove("active");
-                micIcon.textContent = "🎤";
-                responseDiv.textContent = "Spracherkennung fehlgeschlagen: " + event.error;
-            };
-        } else {
-            micBtn.style.display = "none";
-        }
-
-        // Text-to-speech (Sprachausgabe)
-        function speakText(text) {
-            if ('speechSynthesis' in window && text) {
-                const utter = new SpeechSynthesisUtterance(text);
-                utter.lang = "de-DE";
-                utter.rate = 1.07;
-                window.speechSynthesis.speak(utter);
-            }
-        }
-    </script>
+    function addMessage(text, who) {
+      const div = document.createElement("div");
+      div.className = "bubble " + who;
+      div.textContent = text;
+      chatMessages.appendChild(div);
+    }
+  </script>
 </body>
 </html>
